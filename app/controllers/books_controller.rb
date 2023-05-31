@@ -9,14 +9,12 @@ class BooksController < ApplicationController
     flash[:notice] = "投稿に成功しました。"
     redirect_to book_path(@book.id)
   else
-    @book = Book.all
+    flash.now[alert] = "投稿に失敗しました。"
+    @books = Book.all
     render :index
   end 
   end 
   
-  def index
-  @books = Book.all
-  end
 
   def show
     @book = Book.find(params[:id])
@@ -33,11 +31,14 @@ class BooksController < ApplicationController
   
   def update
     @book = Book.find(params[:id])
-    @book.update(book_params)
+    if @book.update(book_params)
     redirect_to book_path(@book.id)
+    else
+    render :edit
+    end 
   end 
  private
   def book_params
-    params.require(:book).permit(:title, :body, :image)
+    params.require(:book).permit(:title, :body)
   end 
 end 
